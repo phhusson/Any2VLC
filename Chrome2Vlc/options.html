@@ -1,0 +1,30 @@
+<html>
+<head><title>Chrome2VLC Options</title></head>
+
+<body>
+
+<form>
+	<label>VLC Server</label><br>
+	<input type="text" id="server" value="localhost" /><br>
+	<br>
+
+	<label>VLC Port (leave 8080 if you don't know)</label><br>
+	<input type="text" id="port" value="8080" /><br>
+	<br>
+
+	<label>VLC Proxy script (leave default if you don't know)</label><br>
+	<input type="text" id="proxy" value="/requests/status.json" /><br>
+	<br>
+
+	<label>VLC Password</label><br>
+	<input type="text" id="pass" value="azertyuiop" /><br>
+	<br>
+
+<br>
+<div id="status"></div>
+<button id="save">Save</button>
+</body>
+
+<script src="options.js"></script>
+
+</html>

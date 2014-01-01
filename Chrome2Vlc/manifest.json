@@ -1,0 +1,30 @@
+{
+	"manifest_version": 2,
+	"name": "Youtube to VLC",
+	"description": "This extension sends YouTube (and others) to VLC",
+	"version": "1.0",
+	"permissions": [
+		"webNavigation",
+		"tabs",
+		"contextMenus",
+		"http://localhost/",
+		"http://localhost:1080/",
+		"http://localhost:8080/",
+		"http://phh-desktop.rezel.net:8080/",
+		"http://youtube-dl.appspot.com/"
+	],
+	"browser_action": {
+		"16": "icon-16.png",
+		"default_icon": "icon.png",
+		"default_popup": "send.html"
+	},
+	"background": {
+		"scripts": [
+			"jquery-1.10.1.min.js",
+			"youtube-dl.js",
+			"vlc.js",
+			"background.js"
+			]
+	},
+	"options_page": "options.html"
+}
