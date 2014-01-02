@@ -9,13 +9,11 @@ function add_password(xhr) {
 
 function vlc_send(type, url, name) {
 	console.log("Send  " + type + " @" + url);
+	var req_uri = base + "?command=in_"+type;
+	req_uri = req_uri + "&input="+encodeURIComponent(url);
+	req_uri = req_uri + "&name="+encodeURIComponent(name);
 	$.ajax({
-		data: {
-			command: 'in_'+type,
-			input: url,
-			name: name,
-		},
-		url: base,
+		url: req_uri,
 		method: 'GET',
 		beforeSend : add_password,
 	});
