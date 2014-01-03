@@ -14,8 +14,8 @@ class ShareService extends LocalService {
 		warn("Hellllo");
 	};
 
-	class Video(videoUri: String) {
-		val scriptUri = "http://youtube-dl.appspot.com/api/?url="+URLEncoder.encode(videoUri, "UTF-8");
+	class Video(videoUri: String, baseUri: String) {
+		val scriptUri = baseUri + URLEncoder.encode(videoUri, "UTF-8");
 		val jsonText = scala.io.Source.fromURL(scriptUri).mkString
 		val jsonTree = JSON.parseFull(jsonText);
 		var url: String = "";
@@ -35,18 +35,18 @@ class ShareService extends LocalService {
 	}
 
 	def open(uri : String) {
-		val pref = Preferences();
+		val pref = Prefs();
 
 		toast("Retrieving file url");
 		warn("Retrieving file url");
-		val v = new Video(uri);
+		val v = new Video(uri, pref.dlapi);
 
 		toast("Sending to VLC");
 		warn("Sending to VLC");
-		var base = "http://"+pref.server("")+":"+pref.port("8080");
-		if(!pref.script("/requests/status.xml").startsWith("/"))
+		var base = "http://"+pref.server+":"+pref.port;
+		if(!pref.proxy.startsWith("/"))
 			base+="/";
-		base+=pref.script("/requests/status.xml");
+		base+=pref.proxy;
 
 		var status = Http.get(base).
 						auth("", pref.password("azertyuiop")).asXml
@@ -57,7 +57,7 @@ class ShareService extends LocalService {
 		base += "input="+URLEncoder.encode(v.url)+"&";
 		base += "duration="+v.duration+"&";
 
-		Http.get(base).auth("", pref.password("azertyuiop")).responseCode
+		Http.get(base).auth("", pref.password).responseCode
 
 		toast("Sent to VLC");
 		warn("Sent to VLC");

@@ -5,20 +5,20 @@ import android.graphics.Color
 
 class Settings extends SActivity {
   onCreate {
-    val pref = Preferences();
+    val pref = Prefs();
 
     contentView = new SVerticalLayout {
       STextView("VLC Server:")
-      val server = SEditText(pref.server("192.168.1.1"));
+      val server = SEditText(pref.server);
 
       STextView("VLC Port (if unsure, leave 8080):")
-      val port = SEditText(pref.port("8080"));
+      val port = SEditText(pref.port);
 
 	  STextView("VLC proxy script (if unsure, leave default)");
-	  val proxy = SEditText(pref.proxy("/requests/status.xml"));
+	  val proxy = SEditText(pref.proxy);
 
-      STextView("Password:")
-      val password = SEditText(pref.password("azertyuiop"));
+      STextView("VLC Password:")
+      val password = SEditText(pref.password);
 
       SButton("Enregistrer").onClick({
         pref.server = server.text.toString();
