@@ -2,7 +2,7 @@ import android.Keys._
 
 android.Plugin.androidBuild
 
-name := "AndroidToVlc"
+name := "Android2Vlc"
 
 scalaVersion := "2.10.3"
 
