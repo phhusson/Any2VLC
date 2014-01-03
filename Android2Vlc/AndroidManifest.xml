@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="me.phh.AndroidToVlc"
+      package="me.phh.Android2Vlc"
       android:versionCode="1"
       android:versionName="1.0">
 
@@ -16,7 +16,7 @@
         </activity>
 
 	<activity android:name="Share"
-		android:label="Envoi a vlc">
+		android:label="Add to remote VLC">
             <intent-filter>
 		    <action android:name="android.intent.action.SEND" />
 		    <category android:name="android.intent.category.DEFAULT" />
@@ -25,10 +25,6 @@
 	</activity>
 
 	<service android:name="ShareService" android:label="Service d'envoi">
-		<intent-filter>
-			<action android:name="me.phh.AndroidToVlc.url" />
-			<category android:name="android.intent.category.DEFAULT" />
-		</intent-filter>
 	</service>
     </application>
 </manifest>

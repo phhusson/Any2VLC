@@ -1,4 +1,4 @@
-package me.phh.AndroidToVlc
+package me.phh.Android2Vlc
 
 import org.scaloid.common._
 import android.graphics.Color
