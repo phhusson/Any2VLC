@@ -4,20 +4,33 @@ import org.scaloid.common._
 import android.graphics.Color
 
 class Settings extends SActivity {
+	implicit val tag = new LoggerTag("Android2Vlc");
+
 	onCreate {
+		val wrong = getIntent().getStringExtra("wrong");
+		warn(wrong);
+
 		val pref = Prefs()
 
 		contentView = new SVerticalLayout {
 			STextView("VLC Server:")
-			val server = SEditText(pref.server)
+			if(wrong == "host" || wrong == "server")
+				STextView("Seems wrong").textColor(Color.RED);
+			val server = SEditText(pref.server) inputType TEXT_URI
 
 			STextView("VLC Port (if unsure, leave 8080):")
+			if(wrong == "server")
+				STextView("Seems wrong").textColor(Color.RED);
 			val port = SEditText(pref.port)
 
 			STextView("VLC proxy script (if unsure, leave default)")
+			if(wrong == "proxy")
+				STextView("Seems wrong").textColor(Color.RED);
 			val proxy = SEditText(pref.proxy)
 
 			STextView("VLC Password:")
+			if(wrong == "password")
+				STextView("Seems wrong").textColor(Color.RED);
 			val password = SEditText(pref.password)
 
 			STextView("youtube-dl API base (if unsure, leave default)")
@@ -31,6 +44,9 @@ class Settings extends SActivity {
 				pref.dlapi = dlapi.text.toString
 				()
 			})
+
+			if(wrong != null)
+				SButton("How to setup VLC ?");
 		} padding 20.dip
 	}
 }

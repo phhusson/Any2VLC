@@ -31,6 +31,60 @@ class ShareService extends LocalService {
 		}
 	}
 
+	def toVlc(uri: String, password: String): Option[scala.xml.Elem]= {
+		def wrong(s: String) = {
+			startActivity(
+					SIntent[Settings].
+					addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).
+					putExtra("wrong", s))
+		}
+		try {
+			val res = Http.get(uri).
+				auth("", password).asXml
+			if( (res \ "body" size) > 0) {
+				//Got an HTML page...
+				//This means password hasn't been set.
+				//We can't get status, but we can add files
+				warn("Got an HTML page...");
+				warn("VLC_PASSWORD_NOT_SET ?");
+
+				//TODO: Handle this case
+				//wrong("password_not_set");
+			}
+			return Some(res)
+		} catch {
+			case e: java.net.UnknownHostException => {
+						warn("Host not found...")
+						wrong("host");
+					}
+			case e: java.net.SocketTimeoutException => {
+						warn("Host timed out...")
+						wrong("host");
+					}
+			case e: java.net.ConnectException => {
+						//VLC not put in server mode or inaccessible
+						warn("Couldn't connect...")
+						wrong("server");
+						warn(e.toString)
+					}
+			case e: scalaj.http.HttpException => {
+						e.code match {
+							case 401 => wrong("password");
+							case _ => {
+								wrong("proxy");
+								warn("proxy");
+							}
+						}
+					}
+			case e: Exception => {
+						wrong("unknown");
+						warn("Couldn't request...")
+						warn(e.toString)
+					}
+		}
+		return None
+	}
+
 	def open(uri : String) {
 		val pref = Prefs()
 
@@ -45,48 +99,23 @@ class ShareService extends LocalService {
 			base+="/"
 		base+=pref.proxy
 
-		var status =  try {
-				Http.get(base).
-					auth("", pref.password).asXml
-			} catch {
-				case e: java.net.UnknownHostException => {
-					startActivity(
-						SIntent[Settings].
-							addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).
-							putExtra("wrong", "server"))
-					warn("Host not found...")
-					return
-				}
-				case e: java.net.ConnectException => {
-					//VLC not put in server mode or inaccessible
-					warn("Couldn't connect...")
-					startActivity(
-						SIntent[Settings].
-							addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).
-							putExtra("wrong", "server"))
-					warn(e.toString)
-					return
-				}
-				case e: Exception => {
-					startActivity(
-						SIntent[Settings].
-							addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).
-							putExtra("wrong", "unknown"))
-					warn("Couldn't request...")
-					warn(e.toString)
-					return
-				}
-			}
-		var stopped = (status \ "state").exists (_.text == "stopped")
+		var status = toVlc(base, pref.password)
+		var stopped = status match {
+			case Some(s) => (s \ "state").exists (_.text == "stopped")
+			case None => false
+		};
 
 		base += (if(stopped) "?command=in_play&" else "?command=in_enqueue&")
 		base += "name="+URLEncoder.encode(v.title, "UTF-8")+"&"
 		base += "input="+URLEncoder.encode(v.url)+"&"
 		base += "duration="+v.duration+"&"
 
-		Http.get(base).auth("", pref.password).responseCode
-
-		toast("Sent to VLC")
-		warn("Sent to VLC")
+		toVlc(base, pref.password) match {
+			case Some(_) => {
+				toast("Sent to VLC")
+				warn("Sent to VLC")
+			}
+			case None => toast("Send to VLC failed");
+		}
 	}
 }
