@@ -1,4 +1,3 @@
-var base = "http://"+localStorage["server"] + ":" + localStorage["port"] + localStorage["proxy"];
 
 function add_password(xhr) {
 	// generate base 64 string from username + password
@@ -8,6 +7,7 @@ function add_password(xhr) {
 }
 
 function vlc_send(type, url, name) {
+	var base = "http://"+localStorage["server"] + ":" + localStorage["port"] + localStorage["proxy"];
 	console.log("Send  " + type + " @" + url);
 	var req_uri = base + "?command=in_"+type;
 	req_uri = req_uri + "&input="+encodeURIComponent(url);
@@ -20,6 +20,7 @@ function vlc_send(type, url, name) {
 }
 
 function vlc_add(video_url, title) {
+	var base = "http://"+localStorage["server"] + ":" + localStorage["port"] + localStorage["proxy"];
 	console.log("Sending " + video_url);
 	$.ajax({
 		url: base,
