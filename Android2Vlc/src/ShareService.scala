@@ -107,6 +107,7 @@ class ShareService extends LocalService {
 
 		base += (if(stopped) "?command=in_play&" else "?command=in_enqueue&")
 		base += "name="+URLEncoder.encode(v.title, "UTF-8")+"&"
+		base += "title="+URLEncoder.encode(v.title, "UTF-8")+"&"
 		base += "input="+URLEncoder.encode(v.url)+"&"
 		base += "duration="+v.duration+"&"
 
