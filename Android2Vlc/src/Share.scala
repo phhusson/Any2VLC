@@ -5,6 +5,7 @@ import scala.reflect.ClassTag
 import android.graphics.Color
 import android.content.{Context,Intent,IntentFilter,BroadcastReceiver}
 import scala.util.matching.Regex
+import scala.concurrent.ops._
 
 class Share extends SActivity {
 	val serv = new LocalServiceConnection[ShareService]
@@ -17,8 +18,12 @@ class Share extends SActivity {
         var re = "http[^ ]*$".r
         uri = (re findAllIn uri).mkString(" ")
 
+        contentView = new SVerticalLayout {
+          STextView("Loading...")
+        }
+
 		serv.onConnected += {
-			s : ShareService => s.open(uri)
+			s : ShareService => spawn { s.open(uri) }
 			finish()
 		}
 	}

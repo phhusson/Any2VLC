@@ -88,7 +88,7 @@ class ShareService extends LocalService {
 	def open(uri : String) {
 		val pref = Prefs()
 
-		toast("Retrieving file url")
+		longToast("Retrieving file url")
 		warn("Retrieving file url")
 		val v = new Video(uri, pref.dlapi)
 
